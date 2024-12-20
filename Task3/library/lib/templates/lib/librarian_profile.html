@@ -1,4 +1,4 @@
-<!-- lib/templates/lib/student_profile.html -->
+<!-- lib/templates/lib/librarian_profile.html -->
 {% load static %}
 
 <!DOCTYPE html>
@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Profile</title>
+    <title>Librarian Profile</title>
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
@@ -14,31 +14,23 @@
         <div class="navbar">
             <a href="{% url 'lib:home' %}" class="brand">Library System</a>
             <div class="nav-links">
-                <a href="{% url 'lib:student_dashboard' %}" class="profile-icon">Dashboard</a>
+                <a href="{% url 'lib:librarian_dashboard' %}" class="profile-icon">Dashboard</a>
                 <a href="{% url 'lib:logout_views' %}" class="logout">Logout</a>
             </div>
         </div>
     </nav>
 
     <div class="welcome-message">
-        <h2>Student Profile</h2>
+        <h2>Librarian Profile</h2>
         <p>Manage your details below:</p>
     </div>
 
-    <!-- Display Google Auth User Information -->
-    <div class="user-info">
-        <p><strong>Name:</strong> {{ request.user.first_name }} {{ request.user.last_name }}</p>
-        <p><strong>Email:</strong> {{ request.user.email }}</p>
-    </div>
-
-    <!-- Profile Form -->
-    <div class="profile-form">
-        <form method="POST">
+    <div class="content">
+        <form method="post">
             {% csrf_token %}
-            {{ form.as_p }}  <!-- Display the form fields as paragraphs -->
-            <button type="submit">Save Changes</button>
+            {{ form.as_p }}
+            <button type="submit">Save</button>
         </form>
     </div>
-
 </body>
 </html>

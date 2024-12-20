@@ -37,12 +37,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'lib',
     'django.contrib.sites',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
+    'lib.apps.LibConfig', 
 ]
 
 MIDDLEWARE = [
@@ -154,11 +154,11 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 
 # Google OAuth settings (replace with your actual keys)
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = 'your-google-client-id'
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'your-google-client-secret'
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '829515356455-nr8u4krrmfs1apjepn2egoed2nhjcbo1.apps.googleusercontent.com'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'
 
 ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+ACCOUNT_EMAIL_VERIFICATION = "none"
 ACCOUNT_AUTHENTICATED_REMEMBER = True
 # ACCOUNT_USERNAME_REQUIRED = False  # Uncomment if you don't want to require a username
 ACCOUNT_LOGIN_ON_SIGNUP = True  # Automatically log in after sign-up
@@ -166,7 +166,6 @@ SOCIALACCOUNT_AUTO_SIGNUP = True
 
 LOGIN_REDIRECT_URL = '/accounts/profile/'  # This will call the custom_login_redirect view
 
-LOGOUT_REDIRECT_URL = '/'
 
 
 

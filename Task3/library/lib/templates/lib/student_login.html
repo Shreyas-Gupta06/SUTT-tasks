@@ -10,14 +10,23 @@
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
-    <div class="login-container">
-        <h2>Login to Student Dashboard</h2>
-        <p>Please log in using your BITS Email:</p>
-        
-        <!-- Google Login Button -->
-        <a href="{% provider_login_url 'google' %}" class="google-login-btn">Login with Google Baba</a>
-
-        </a>
+    <nav>
+        <div class="navbar">
+            <a href="{% url 'lib:home' %}" class="brand">Library System</a>
+            <div class="nav-links">
+                <a href="{% url 'lib:student_profile' %}" class="profile-icon">Profile</a>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="content">
+        <div class="login-container">
+            <h2>Login to Student Dashboard</h2>
+            <p>Please log in using your BITS Email:</p>
+            
+            <!-- Google Login Button -->
+            <a href="{% provider_login_url 'google' %}" class="google-login-btn">Login with Google</a>
+        </div>
     </div>
 </body>
 </html>

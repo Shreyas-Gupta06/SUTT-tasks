@@ -12,13 +12,10 @@
     <nav>
         <div class="navbar">
             <a href="{% url 'lib:home' %}" class="brand">Library System</a>
+            
             <div class="nav-links">
-                <a href="#" class="profile-icon">Profile (Placeholder)</a>
-                <!-- Logout form -->
-                <form id="logout-form" method="post" action="{% url 'lib:logout' %}" style="display: inline;">
-                    {% csrf_token %}
-                    <button type="submit" class="logout-button">Logout</button>
-                </form>
+                <a href="{% url 'lib:librarian_profile' %}" class="profile-icon">Profile</a>
+                <a href="{% url 'lib:logout_views' %}" >Logout</a> 
             </div>
         </div>
     </nav>

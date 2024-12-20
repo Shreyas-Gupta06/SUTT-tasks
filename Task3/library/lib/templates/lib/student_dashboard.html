@@ -15,12 +15,13 @@
             <a href="{% url 'lib:home' %}" class="brand">Library System</a>
             <div class="nav-links">
                 <a href="{% url 'lib:student_profile' %}" class="profile-icon">Profile</a>
-                
+                <a href="{% url 'lib:logout_views' %}" >Logout</a>
                 <!-- Logout Button -->
-                <form method="POST" action="{% url 'lib:custom_logout' %}" style="display: inline;">
+<!--                  
+                <form method="POST" action="{% url 'lib:logout_views' %}" style="display: inline;">
                     {% csrf_token %}
                     <button type="submit" class="logout-button">Logout</button>
-                </form>
+                </form> -->
             </div>
         </div>
     </nav>

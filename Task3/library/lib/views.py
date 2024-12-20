@@ -5,6 +5,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login,logout
 from .forms import ProfileForm
 from .models import StudentProfile
+from .models import LibrarianProfile
+from .forms import LibrarianProfileForm
+
 
 
 def librarian_login(request):
@@ -58,17 +61,33 @@ def custom_login_redirect(request):
         # Redirect to student dashboard
         return redirect('lib:student_dashboard')
 
-def google_logout(request):
+def logout_views(request):
     # First log the user out from Django
     logout(request)
     
     # Now, redirect to Google logout URL to ensure the user is logged out of Google
-    return redirect('https://accounts.google.com/Logout')
+    return redirect('lib:home')
 
 def google_login_callback(request):
-    user = request.user  # The user is already logged in after Google OAuth
-    print(f"Logged in user: {user.username}")  # Check if this prints the logged-in user
+    print(f"Request received for user: {request.user.username}")  # Add this line to check if the view is being called
+    user = request.user
     if not hasattr(user, 'studentprofile'):
-        print("Creating student profile")
+        print("Creating student profile")  # Check if this line is printed when the profile does not exist
         StudentProfile.objects.create(user=user)
     return redirect('lib:student_dashboard')
+
+@login_required
+def librarian_profile(request):
+    profile, created = LibrarianProfile.objects.get_or_create(user=request.user)
+
+    if request.method == 'POST':
+        form = LibrarianProfileForm(request.POST, instance=profile)
+        if form.is_valid():
+            form.save()
+            return redirect('lib:librarian_profile')
+    else:
+        form = LibrarianProfileForm(instance=profile)
+
+    return render(request, 'lib/librarian_profile.html', {'form': form})
+
+
