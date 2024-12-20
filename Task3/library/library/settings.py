@@ -152,7 +152,7 @@ SOCIALACCOUNT_PROVIDERS = {
         'OAUTH_PKCE_ENABLED': True,
     }
 }
-
+#test
 # Google OAuth settings (replace with your actual keys)
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '829515356455-nr8u4krrmfs1apjepn2egoed2nhjcbo1.apps.googleusercontent.com'
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'
