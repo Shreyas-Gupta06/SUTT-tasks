@@ -2,24 +2,31 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import login,logout
+from django.contrib.auth import login,logout,authenticate
+from django.contrib import messages
 from .forms import ProfileForm
 from .models import StudentProfile
 from .models import LibrarianProfile
 from .forms import LibrarianProfileForm
 
+from django.contrib.admin.views.decorators import staff_member_required
 
 
-def librarian_login(request):
+
+
+@staff_member_required
+def librarian_profile(request):
+    profile, created = LibrarianProfile.objects.get_or_create(user=request.user)
+
     if request.method == 'POST':
-        form = AuthenticationForm(data=request.POST)
+        form = LibrarianProfileForm(request.POST, instance=profile)
         if form.is_valid():
-            user = form.get_user()
-            login(request, user)
-            return redirect('lib:librarian_dashboard')  # Redirect to the librarian dashboard after login
+            form.save()
+            return redirect('lib:librarian_profile')
     else:
-        form = AuthenticationForm()
-    return render(request, 'lib/librarian_login.html', {'form': form})
+        form = LibrarianProfileForm(instance=profile)
+
+    return render(request, 'lib/librarian_profile.html', {'form': form})    
 
 def home(request):
     return render(request, 'lib/base.html')
@@ -32,7 +39,7 @@ def student_login(request):
 def student_dashboard(request):
     return render(request, 'lib/student_dashboard.html')
 
-@login_required(login_url='/librarian/login/')
+@staff_member_required
 def librarian_dashboard(request):
     return render(request, 'lib/librarian_dashboard.html')
 
@@ -76,7 +83,7 @@ def google_login_callback(request):
         StudentProfile.objects.create(user=user)
     return redirect('lib:student_dashboard')
 
-@login_required
+@staff_member_required
 def librarian_profile(request):
     profile, created = LibrarianProfile.objects.get_or_create(user=request.user)
 
@@ -90,4 +97,16 @@ def librarian_profile(request):
 
     return render(request, 'lib/librarian_profile.html', {'form': form})
 
+def librarian_login(request):
+    if request.method == 'POST':
+        form = AuthenticationForm(data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            # Redirect to librarian dashboard after login
+            return redirect('lib:librarian_dashboard') 
+    else:
+        form = AuthenticationForm()
+
+    return render(request, 'lib/librarian_login.html', {'form': form})
 

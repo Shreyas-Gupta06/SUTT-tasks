@@ -18,5 +18,7 @@ urlpatterns = [
     path('librarian/login/', views.librarian_login, name='librarian_login'),
     path('librarian/dashboard/', views.librarian_dashboard, name='librarian_dashboard'),
     path('accounts/profile/', views.custom_login_redirect, name='custom_login_redirect'),
-    path('librarian/profile/', views.librarian_profile, name='librarian_profile')
+    path('librarian/profile/', views.librarian_profile, name='librarian_profile'),
+    
+    
 ]

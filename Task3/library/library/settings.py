@@ -165,7 +165,7 @@ ACCOUNT_LOGIN_ON_SIGNUP = True  # Automatically log in after sign-up
 SOCIALACCOUNT_AUTO_SIGNUP = True
 
 LOGIN_REDIRECT_URL = '/accounts/profile/'  # This will call the custom_login_redirect view
-
+LOGIN_URL = '/'
 
 
 

@@ -1,0 +1,29 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Book</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <nav>
+        <div class="navbar">
+            <a href="{% url 'lib:home' %}" class="brand">Library System</a>
+            <a href="{% url 'lib:book_list' %}">Book List</a>
+            <a href="{% url 'lib:logout_views' %}">Logout</a>
+        </div>
+    </nav>
+
+    <div class="form-container">
+        <h2>Add a New Book</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Add Book</button>
+        </form>
+    </div>
+</body>
+</html>
