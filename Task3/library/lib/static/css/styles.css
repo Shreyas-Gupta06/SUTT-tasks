@@ -100,3 +100,20 @@ body {
 .navbar .logout:hover {
     text-decoration: underline;
 }
+
+.message-container {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.alert-success {
+    margin: 5px 0;
+    padding: 10px;
+    background-color: #d4edda;
+    color: #155724;
+}

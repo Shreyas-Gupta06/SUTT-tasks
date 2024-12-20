@@ -6,11 +6,28 @@ from django.contrib.auth import login,logout,authenticate
 from django.contrib import messages
 from .forms import ProfileForm
 from .models import StudentProfile
-from .models import LibrarianProfile
+from .models import LibrarianProfile, Book
 from .forms import LibrarianProfileForm
+from .forms import BookForm  # Ensure you have a BookForm for creating books
+from django.http import HttpResponse
+
 
 from django.contrib.admin.views.decorators import staff_member_required
 
+from .forms import BookForm
+
+@staff_member_required
+def add_book(request):
+    if request.method == 'POST':
+        form = BookForm(request.POST)
+        if form.is_valid():
+            form.save()  # Save the new book
+            messages.success(request, 'Book added successfully!')  # Show success message
+            return redirect('lib:librarian_dashboard')  # Redirect to dashboard after success
+    else:
+        form = BookForm()
+
+    return render(request, 'lib/addbook.html', {'form': form})
 
 
 
@@ -39,9 +56,7 @@ def student_login(request):
 def student_dashboard(request):
     return render(request, 'lib/student_dashboard.html')
 
-@staff_member_required
-def librarian_dashboard(request):
-    return render(request, 'lib/librarian_dashboard.html')
+
 
 
 @login_required(login_url='/login/')
@@ -75,13 +90,6 @@ def logout_views(request):
     # Now, redirect to Google logout URL to ensure the user is logged out of Google
     return redirect('lib:home')
 
-def google_login_callback(request):
-    print(f"Request received for user: {request.user.username}")  # Add this line to check if the view is being called
-    user = request.user
-    if not hasattr(user, 'studentprofile'):
-        print("Creating student profile")  # Check if this line is printed when the profile does not exist
-        StudentProfile.objects.create(user=user)
-    return redirect('lib:student_dashboard')
 
 @staff_member_required
 def librarian_profile(request):
@@ -110,3 +118,10 @@ def librarian_login(request):
 
     return render(request, 'lib/librarian_login.html', {'form': form})
 
+
+@staff_member_required
+def librarian_dashboard(request):
+    # Fetching all books for the librarian to view
+    books = Book.objects.all()
+    
+    return render(request, 'lib/librarian_dashboard.html', {'books': books})

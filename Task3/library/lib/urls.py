@@ -20,5 +20,6 @@ urlpatterns = [
     path('accounts/profile/', views.custom_login_redirect, name='custom_login_redirect'),
     path('librarian/profile/', views.librarian_profile, name='librarian_profile'),
     
+    path('librarian/add-book/', views.add_book, name='add_book'),
     
 ]
