@@ -1,0 +1,30 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Book Details</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <nav>
+        <div class="navbar">
+            <a href="{% url 'lib:home' %}" class="brand">Library System</a>
+            <div class="nav-links">
+                <a href="{% url 'lib:logout_views' %}" >Logout</a> 
+            </div>
+        </div>
+    </nav>
+
+    <div class="form-container">
+        <h2>Edit Book Details</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+        </form>
+    </div>
+</body>
+</html>

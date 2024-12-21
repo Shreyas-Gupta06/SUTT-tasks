@@ -25,17 +25,6 @@
         <p>Access all the resources and services available to you.</p>
     </div>
 
-    <!-- Display Success Message -->
-    {% if messages %}
-        <div class="message-container">
-            {% for message in messages %}
-                <div class="alert alert-success">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        </div>
-    {% endif %}
-
     <!-- Book List Section -->
     <div class="book-list">
         <h3>Book List</h3>
@@ -53,7 +42,7 @@
             <tbody>
                 {% for book in books %}
                 <tr>
-                    <td>{{ book.title }}</td>
+                    <td><a href="{% url 'lib:book_detail' book.isbn_number %}">{{ book.title }}</a></td>
                     <td>{{ book.author }}</td>
                     <td>{{ book.genre }}</td>
                     <td>{{ book.published_date }}</td>
@@ -72,6 +61,5 @@
     <div class="add-books-btn">
         <a href="{% url 'lib:add_book' %}" class="btn btn-primary">Add New Book</a>
     </div>
-
 </body>
 </html>

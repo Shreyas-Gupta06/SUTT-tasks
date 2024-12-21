@@ -20,9 +20,10 @@ from django.contrib.admin.views.decorators import staff_member_required
 from .forms import BookForm
 
 import pandas as pd
-
+from django.urls import reverse
 from django.contrib.admin.views.decorators import staff_member_required
 from django.http import FileResponse
+from django.shortcuts import get_object_or_404
 
 @staff_member_required
 def download_template(request):
@@ -31,6 +32,20 @@ def download_template(request):
         return FileResponse(open(file_path, 'rb'), as_attachment=True, filename='book_template.xlsx')
     else:
         return HttpResponse("File not found.")
+    
+@staff_member_required
+def book_detail(request, isbn_number):
+    book = get_object_or_404(Book, isbn_number=isbn_number)
+    if request.method == 'POST':
+        form = BookForm(request.POST, instance=book)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('lib:librarian_dashboard'))
+    else:
+        form = BookForm(instance=book)
+
+    return render(request, 'lib/book_detail.html', {'form': form, 'book': book})
+
 
 
 

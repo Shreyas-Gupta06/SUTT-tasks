@@ -24,4 +24,5 @@ urlpatterns = [
     
     path('download_template/', views.download_template, name='download_template'),
     path('upload_books/', views.upload_books, name='upload_books'),
+    path('book/<str:isbn_number>/', views.book_detail, name='book_detail'),
 ]
