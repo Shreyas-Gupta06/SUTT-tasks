@@ -26,5 +26,7 @@ urlpatterns = [
     
     path('download_template/', views.download_template, name='download_template'),
     path('upload_books/', views.upload_books, name='upload_books'),
-    path('book/<str:isbn_number>/', views.book_detail, name='book_detail'),
+    path('booklib/<str:isbn_number>/', views.book_detail_lib, name='book_detail_lib'),
+    path('bookstu/<str:isbn_number>/', views.book_detail_stu, name='book_detail_stu'),
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

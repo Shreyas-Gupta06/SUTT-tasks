@@ -36,7 +36,7 @@ def download_template(request):
         return HttpResponse("File not found.")
     
 @staff_member_required
-def book_detail(request, isbn_number):
+def book_detail_lib(request, isbn_number):
     book = get_object_or_404(Book, isbn_number=isbn_number)
     if request.method == 'POST':
         form = BookForm(request.POST, instance=book)
@@ -46,7 +46,12 @@ def book_detail(request, isbn_number):
     else:
         form = BookForm(instance=book)
 
-    return render(request, 'lib/book_detail.html', {'form': form, 'book': book})
+    return render(request, 'lib/book_detail_lib.html', {'form': form, 'book': book})
+
+@login_required(login_url='/login/')
+def book_detail_stu(request, isbn_number):
+    book = get_object_or_404(Book, isbn_number=isbn_number)
+    return render(request, 'lib/book_detail_stu.html', {'book': book})
 
 
 
@@ -115,9 +120,7 @@ def home(request):
 def student_login(request):
     return render(request, 'lib/student_login.html')
 
-@login_required(login_url='/login/')
-def student_dashboard(request):
-    return render(request, 'lib/student_dashboard.html')
+
 
 
 
@@ -192,4 +195,13 @@ def librarian_dashboard(request):
 
     return render(request, 'lib/librarian_dashboard.html', {'books': books})
 
+@login_required(login_url='/login/')
+def student_dashboard(request):
+    query = request.GET.get('q')
+    if query:
+        books = Book.objects.filter(title__icontains=query)
+    else:
+        books = Book.objects.all()
+
+    return render(request, 'lib/student_dashboard.html', {'books': books})
 
