@@ -126,11 +126,20 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = '/static/'
+
 
 STATICFILES_DIRS = [
     BASE_DIR / 'lib' / 'static',  # Path to your 'static' folder inside the lib app
 ]
+
+import os
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Static files (CSS, JavaScript, Images)
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'lib', 'static')]
 
 
 # Default primary key field type
@@ -168,6 +177,15 @@ LOGIN_REDIRECT_URL = '/accounts/profile/'  # This will call the custom_login_red
 LOGIN_URL = '/'
 
 
+from django.contrib.messages import constants as messages
 
+MESSAGE_TAGS = {
+    messages.DEBUG: 'debug',
+    messages.INFO: 'info',
+    messages.SUCCESS: 'success',
+    messages.WARNING: 'warning',
+    messages.ERROR: 'danger',
+}
 
-
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

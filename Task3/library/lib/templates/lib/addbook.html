@@ -5,29 +5,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add New Book</title>
+    <title>Add Book</title>
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
     <nav>
         <div class="navbar">
-            <a href="{% url 'lib:home' %}" class="brand">Library System</a>
+            <a href="{% url 'lib:librarian_dashboard' %}" class="brand">Library System</a>
             
             <div class="nav-links">
-                <a href="{% url 'lib:librarian_dashboard' %}" class="profile-icon">Dashboard</a>
+                <a href="{% url 'lib:librarian_profile' %}" class="profile-icon">Profile</a>
                 <a href="{% url 'lib:logout_views' %}" >Logout</a> 
             </div>
         </div>
     </nav>
 
-    <div class="add-book-form">
-        <h2>Add a New Book</h2>
-        <form method="POST">
+    <div class="container">
+        <h2>Add Book Manually</h2>
+        <form method="post" action="{% url 'lib:add_book' %}">
             {% csrf_token %}
-            {{ form.as_p }}  <!-- Render the form as paragraphs -->
+            {{ form.as_p }}
             <button type="submit" class="btn btn-primary">Add Book</button>
         </form>
-    </div>
 
+        <hr>
+
+        <h2>Upload Books via Excel</h2>
+        <a href="{% url 'lib:download_template' %}" class="btn btn-secondary">Download Template</a>
+        <form method="post" action="{% url 'lib:upload_books' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <label for="excel_file">Upload Excel File</label>
+            <input type="file" name="excel_file" id="excel_file" required>
+            <button type="submit" class="btn btn-primary">Upload</button>
+        </form>
+    </div>
 </body>
 </html>

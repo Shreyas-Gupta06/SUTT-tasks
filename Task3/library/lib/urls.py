@@ -22,4 +22,6 @@ urlpatterns = [
     
     path('librarian/add-book/', views.add_book, name='add_book'),
     
+    path('download_template/', views.download_template, name='download_template'),
+    path('upload_books/', views.upload_books, name='upload_books'),
 ]
