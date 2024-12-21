@@ -15,7 +15,7 @@
             
             <div class="nav-links">
                 <a href="{% url 'lib:librarian_profile' %}" class="profile-icon">Profile</a>
-                <a href="{% url 'lib:logout_views' %}" >Logout</a> 
+                <a href="{% url 'lib:logout_views' %}">Logout</a>
             </div>
         </div>
     </nav>
@@ -23,6 +23,14 @@
     <div class="welcome-message">
         <h2>Welcome to the Librarian Dashboard</h2>
         <p>Access all the resources and services available to you.</p>
+    </div>
+
+    <!-- Search Form -->
+    <div class="search-form">
+        <form method="GET" action="{% url 'lib:librarian_dashboard' %}">
+            <input type="text" name="q" placeholder="Search for a book by title" value="{{ request.GET.q }}">
+            <button type="submit">Search</button>
+        </form>
     </div>
 
     <!-- Book List Section -->
@@ -37,6 +45,7 @@
                     <th>Published Date</th>
                     <th>ISBN Number</th>
                     <th>Available Copies</th>
+                    <th>Image</th>
                 </tr>
             </thead>
             <tbody>
@@ -48,10 +57,17 @@
                     <td>{{ book.published_date }}</td>
                     <td>{{ book.isbn_number }}</td>
                     <td>{{ book.available_copies }}</td>
+                    <td>
+                        {% if book.image %}
+                            <img src="{{ book.image.url }}" alt="{{ book.title }}" style="max-width: 100px; max-height: 100px;">
+                        {% else %}
+                            No image available
+                        {% endif %}
+                    </td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="6">No books available.</td>
+                    <td colspan="7">No books available.</td>
                 </tr>
                 {% endfor %}
             </tbody>

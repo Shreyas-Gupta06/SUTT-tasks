@@ -2,6 +2,8 @@
 from django.urls import path
 from . import views
 from django.contrib.auth.views import LogoutView  # Import Django's built-in LogoutView
+from django.conf import settings
+from django.conf.urls.static import static
 
 app_name = "lib"
 
@@ -25,4 +27,4 @@ urlpatterns = [
     path('download_template/', views.download_template, name='download_template'),
     path('upload_books/', views.upload_books, name='upload_books'),
     path('book/<str:isbn_number>/', views.book_detail, name='book_detail'),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

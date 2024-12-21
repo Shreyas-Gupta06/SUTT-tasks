@@ -24,6 +24,8 @@ from django.urls import reverse
 from django.contrib.admin.views.decorators import staff_member_required
 from django.http import FileResponse
 from django.shortcuts import get_object_or_404
+from django.db.models import Q
+
 
 @staff_member_required
 def download_template(request):
@@ -45,7 +47,6 @@ def book_detail(request, isbn_number):
         form = BookForm(instance=book)
 
     return render(request, 'lib/book_detail.html', {'form': form, 'book': book})
-
 
 
 
@@ -76,14 +77,16 @@ def upload_books(request):
     return render(request, 'lib/addbook.html')
 
 
+
+
 @staff_member_required
 def add_book(request):
     if request.method == 'POST':
-        form = BookForm(request.POST)
+        form = BookForm(request.POST, request.FILES)  # Include request.FILES for handling file uploads
         if form.is_valid():
-            form.save()  # Save the new book
-            messages.success(request, 'Book added successfully!')  # Show success message
-            return redirect('lib:librarian_dashboard')  # Redirect to dashboard after success
+            form.save()
+            messages.success(request, 'Book added successfully!')
+            return redirect('lib:librarian_dashboard')  # Redirect to librarian_dashboard after successful addition
     else:
         form = BookForm()
 
@@ -181,7 +184,12 @@ def librarian_login(request):
 
 @staff_member_required
 def librarian_dashboard(request):
-    # Fetching all books for the librarian to view
-    books = Book.objects.all()
-    
+    query = request.GET.get('q')
+    if query:
+        books = Book.objects.filter(title__icontains=query)
+    else:
+        books = Book.objects.all()
+
     return render(request, 'lib/librarian_dashboard.html', {'books': books})
+
+

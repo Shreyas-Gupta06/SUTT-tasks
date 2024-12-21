@@ -17,4 +17,4 @@ class LibrarianProfileForm(forms.ModelForm):
 class BookForm(forms.ModelForm):
     class Meta:
         model = Book
-        fields = ['title', 'author', 'genre', 'published_date', 'isbn_number', 'available_copies']
+        fields = ['title', 'author', 'genre', 'published_date', 'isbn_number', 'available_copies', 'image'] 
