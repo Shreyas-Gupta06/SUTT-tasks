@@ -51,7 +51,7 @@
             <tbody>
                 {% for book in books %}
                 <tr>
-                    <td><a href="{% url 'lib:book_detail' book.isbn_number %}">{{ book.title }}</a></td>
+                    <td><a href="{% url 'lib:book_detail_lib' book.isbn_number %}">{{ book.title }}</a></td>
                     <td>{{ book.author }}</td>
                     <td>{{ book.genre }}</td>
                     <td>{{ book.published_date }}</td>

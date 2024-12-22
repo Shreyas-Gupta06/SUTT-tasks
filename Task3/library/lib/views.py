@@ -39,14 +39,18 @@ def download_template(request):
 def book_detail_lib(request, isbn_number):
     book = get_object_or_404(Book, isbn_number=isbn_number)
     if request.method == 'POST':
-        form = BookForm(request.POST, instance=book)
+
+        form = BookForm(request.POST, request.FILES, instance=book)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect(reverse('lib:librarian_dashboard'))
+            return redirect('lib:librarian_dashboard')
+        else:
+            print("Form is not valid:", form.errors)
     else:
         form = BookForm(instance=book)
 
     return render(request, 'lib/book_detail_lib.html', {'form': form, 'book': book})
+
 
 @login_required(login_url='/login/')
 def book_detail_stu(request, isbn_number):
