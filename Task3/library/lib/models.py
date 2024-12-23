@@ -49,8 +49,12 @@ class GlobalSettings(models.Model):
     late_fees_per_day = models.DecimalField(max_digits=5, decimal_places=2, default=0.00)
 
 
-# class IssuePeriod(models.Model):
-#     issue_period_days = models.IntegerField(default=7)
+class Feedback(models.Model):
+    student = models.ForeignKey(User, on_delete=models.CASCADE)
+    subject = models.CharField(max_length=255)
+    body = models.TextField()
+    image = models.ImageField(upload_to='feedback_images/', blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
-#     def __str__(self):
-#         return f"{self.issue_period_days} days"
+    def __str__(self):
+        return self.subject

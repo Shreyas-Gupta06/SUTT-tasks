@@ -43,7 +43,17 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'lib.apps.LibConfig', 
+    'social_django',
 ]
+
+
+# SOCIAL_AUTH_GOOGLE_OAUTH2_AUTH_EXTRA_ARGUMENTS = {
+#         'hd': 'pilani.bits-pilani.ac.in'
+#     }
+
+# ACCOUNT_EMAIL_DOMAIN_WHITELIST = ['pilani.bits-pilani.ac.in']
+
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -163,8 +173,8 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 #test
 # Google OAuth settings (replace with your actual keys)
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '829515356455-nr8u4krrmfs1apjepn2egoed2nhjcbo1.apps.googleusercontent.com'
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '189266254503-q8j879fv5v71avdbfbt06hir8mp6ii51.apps.googleusercontent.com'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'
 
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = "none"
@@ -175,6 +185,16 @@ SOCIALACCOUNT_AUTO_SIGNUP = True
 
 LOGIN_REDIRECT_URL = '/accounts/profile/'  # This will call the custom_login_redirect view
 LOGIN_URL = '/'
+
+# Update settings.py to use the custom adapters
+ACCOUNT_ADAPTER = 'lib.adapters.MyAccountAdapter'
+SOCIALACCOUNT_ADAPTER = 'lib.adapters.MySocialAccountAdapter'
+
+
+# ACCOUNT_ADAPTER = 'lib.adapters.CustomAccountAdapter'
+
+
+
 
 
 from django.contrib.messages import constants as messages

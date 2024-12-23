@@ -36,6 +36,8 @@ urlpatterns = [
     path('student/borrow/<str:isbn_number>/', views.borrow_book, name='borrow_book'),
     path('student/borrowed-books/', views.student_borrowed_books, name='student_borrowed_books'),
      path('return_book/<int:borrow_id>/', views.return_book, name='return_book'),
+     path('feedback/', views.feedback_submission, name='student_feedback'),
+     path('view_feedback/', views.view_feedback, name='view_feedback'),
 
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

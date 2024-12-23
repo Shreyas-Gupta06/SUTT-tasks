@@ -1,7 +1,7 @@
 # lib/forms.py
 from django import forms
 from .models import StudentProfile
-from .models import LibrarianProfile, Book, GlobalSettings
+from .models import LibrarianProfile, Book, GlobalSettings, Feedback
 
 
 class ProfileForm(forms.ModelForm):
@@ -26,4 +26,9 @@ class LateFeesForm(forms.Form):
 
 class IssuePeriodForm(forms.Form):
     issue_period = forms.IntegerField(label='Issue Period (in days)', min_value=1)
-    
+
+
+class FeedbackForm(forms.ModelForm):
+    class Meta:
+        model = Feedback
+        fields = ['subject', 'body', 'image']

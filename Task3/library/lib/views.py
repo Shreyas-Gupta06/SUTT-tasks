@@ -29,6 +29,15 @@ from .forms import LateFeesForm
 from .models import Borrow, GlobalSettings
 from datetime import timedelta
 from django.utils import timezone
+from .forms import FeedbackForm
+
+from .models import Feedback  # Assuming Feedback model exists
+
+def view_feedback(request):
+    feedbacks = Feedback.objects.all()
+    return render(request, 'lib/view_feedback.html', {'feedbacks': feedbacks})
+
+
 
 
 
@@ -281,6 +290,19 @@ def borrow_book(request, isbn_number):
 
 
 
+
+@login_required(login_url='lib:student_login')
+def feedback_submission(request):
+    if request.method == 'POST':
+        form = FeedbackForm(request.POST, request.FILES)
+        if form.is_valid():
+            feedback = form.save(commit=False)
+            feedback.student = request.user
+            feedback.save()
+            return redirect('lib:student_dashboard')
+    else:
+        form = FeedbackForm()
+    return render(request, 'lib/feedback_form.html', {'form': form})
 
 
 
