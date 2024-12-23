@@ -1,0 +1,72 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Borrowed Books</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <nav>
+        <div class="navbar">
+            <a href="{% url 'lib:home' %}" class="brand">Library System</a>
+            <div class="nav-links">
+                <a href="{% url 'lib:student_dashboard' %}">Dashboard</a>
+                <a href="{% url 'lib:logout_views' %}">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h2>Borrowed Books</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>ISBN Number</th>
+                    <th>Image</th>
+                    <th>Due Date</th>
+                    <th>Late Fees per Day Applicable After Due Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for borrow in borrowed_books %}
+                <tr>
+                    <td>{{ borrow.book.title }}</td>
+                    <td>{{ borrow.book.isbn_number }}</td>
+                    <td>
+                        {% if borrow.book.image %}
+                            <img src="{{ borrow.book.image.url }}" alt="{{ borrow.book.title }}">
+                        {% else %}
+                            No image available
+                        {% endif %} 
+                    </td>
+                    <td>{{ borrow.due_date }}</td>
+                    <td>{{ borrow.late_fees }}</td>
+                    <td>
+                        <form method="post" action="{% url 'lib:return_book' borrow.id %}">
+                            {% csrf_token %}
+                            <button type="submit">Return</button>
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6">No books borrowed.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2025 Library Management System</p>
+        </div>
+    </footer>
+</body>
+</html>

@@ -28,5 +28,14 @@ urlpatterns = [
     path('upload_books/', views.upload_books, name='upload_books'),
     path('booklib/<str:isbn_number>/', views.book_detail_lib, name='book_detail_lib'),
     path('bookstu/<str:isbn_number>/', views.book_detail_stu, name='book_detail_stu'),
+    
+    path('borrowed_books/', views.borrowed_books, name='borrowed_books'),
+    path('late_fees_details/<int:borrow_id>/', views.late_fees_details, name='late_fees_details'),
+    path('issue_period/', views.issue_period, name='issue_period'),
+
+    path('student/borrow/<str:isbn_number>/', views.borrow_book, name='borrow_book'),
+    path('student/borrowed-books/', views.student_borrowed_books, name='student_borrowed_books'),
+     path('return_book/<int:borrow_id>/', views.return_book, name='return_book'),
+
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

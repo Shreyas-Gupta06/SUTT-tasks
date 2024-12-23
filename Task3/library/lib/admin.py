@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
-from .models import StudentProfile, LibrarianProfile, Book
+from .models import StudentProfile, LibrarianProfile, Book, Borrow, GlobalSettings
 
 # Define an inline admin descriptor for StudentProfile model
 class StudentProfileInline(admin.StackedInline):
@@ -30,3 +30,5 @@ admin.site.register(User, UserAdmin)
 admin.site.register(StudentProfile)
 admin.site.register(LibrarianProfile)
 admin.site.register(Book)
+admin.site.register(Borrow)
+admin.site.register(GlobalSettings)

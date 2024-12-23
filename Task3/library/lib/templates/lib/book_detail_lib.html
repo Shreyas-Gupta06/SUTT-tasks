@@ -11,9 +11,10 @@
 <body>
     <nav>
         <div class="navbar">
-            <a href="{% url 'lib:librarian_dashboard' %}" class="brand">Library System</a>
+            <a href="{% url 'lib:home' %}" class="brand">Library System</a>
             <div class="nav-links">
-                <a href="{% url 'lib:librarian_profile' %}" class="profile-icon">Profile</a>
+                <a href="{% url 'lib:librarian_dashboard' %}" class="profile-icon">Dashboard</a>
+                
                 <a href="{% url 'lib:logout_views' %}">Logout</a>
             </div>
         </div>
@@ -39,6 +40,7 @@
             <div class="form-group">
                 <label for="id_published_date">Published Date:</label>
                 <input type="date" name="published_date" id="id_published_date" value="{{ book.published_date }}" required>
+                <p>Current Published Date: {{ book.published_date }}</p>
             </div>
             <div class="form-group">
                 <label for="id_isbn_number">ISBN Number:</label>
@@ -54,12 +56,18 @@
                 {% if book.image %}
                 <div class="current-image">
                     <p>Current Image:</p>
-                    <img src="{{ book.image.url }}" alt="{{ book.title }}" style="max-width: 200px;">
+                    <img src="{{ book.image.url }}" alt="{{ book.title }}">
                 </div>
                 {% endif %}
             </div>
             <button type="submit" class="btn btn-primary">Update Book</button>
         </form>
     </div>
+    
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2024 Library System. All rights reserved.</p>
+        </div>
+    </footer>
 </body>
 </html>

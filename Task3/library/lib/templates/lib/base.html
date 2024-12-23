@@ -15,7 +15,7 @@
             <div class="nav-links">
                 <a href="{% url 'lib:student_login' %}">Student</a>
                 <a href="{% url 'lib:librarian_login' %}">Librarian Login</a>
-                <a href="/admin/">Admin</a> 
+                <a href="/admin/" class="nav-links">Admin</a> <!-- Added class="nav-links" -->
             </div>
         </div>
     </nav>
@@ -30,5 +30,12 @@
         {% block content %}
         {% endblock %}
     </div>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2024 Library System. All rights reserved.</p>
+        </div>
+    </footer>
+
 </body>
 </html>

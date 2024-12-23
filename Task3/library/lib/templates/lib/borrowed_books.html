@@ -1,0 +1,83 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Borrowed Books</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="navbar">
+            <a href="{% url 'lib:home' %}" class="brand">Library System</a>
+            <div class="nav-links">
+                <a href="{% url 'lib:librarian_dashboard' %}">Dashboard</a>
+                <a href="{% url 'lib:librarian_profile' %}" class="profile-icon">Profile</a>
+                
+               
+                <a href="{% url 'lib:logout_views' %}">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="content-section">
+        <h1>Borrowed Books</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Book Title</th>
+                    <th>ISBN Number</th>
+                    <th>Borrowed By</th>
+                    <th>Due Date</th>
+                    <th>Late Fees Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for borrow in borrowed_books %}
+                <tr>
+                    <td>{{ borrow.book.title }}</td>
+                    <td>{{ borrow.book.isbn_number }}</td>
+                    <td>{{ borrow.student.user.first_name }} {{ borrow.student.user.last_name }}</td>
+                    <td>{{ borrow.due_date }}</td>
+                    <td>
+                        <a href="{% url 'lib:late_fees_details' borrow.id %}">Late Fees Details</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5">No borrowed books available.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2024 Library System. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

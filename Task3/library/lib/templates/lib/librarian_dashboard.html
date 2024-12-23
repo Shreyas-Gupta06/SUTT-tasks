@@ -12,9 +12,10 @@
     <nav>
         <div class="navbar">
             <a href="{% url 'lib:home' %}" class="brand">Library System</a>
-            
             <div class="nav-links">
                 <a href="{% url 'lib:librarian_profile' %}" class="profile-icon">Profile</a>
+                <a href="{% url 'lib:borrowed_books' %}">Borrowed Books</a>
+                <a href="{% url 'lib:issue_period' %}">Issue Period</a>
                 <a href="{% url 'lib:logout_views' %}">Logout</a>
             </div>
         </div>
@@ -59,7 +60,7 @@
                     <td>{{ book.available_copies }}</td>
                     <td>
                         {% if book.image %}
-                            <img src="{{ book.image.url }}" alt="{{ book.title }}" style="max-width: 100px; max-height: 100px;">
+                            <img src="{{ book.image.url }}" alt="{{ book.title }}" class="book-image">
                         {% else %}
                             No image available
                         {% endif %}
@@ -77,5 +78,9 @@
     <div class="add-books-btn">
         <a href="{% url 'lib:add_book' %}" class="btn btn-primary">Add New Book</a>
     </div>
+
+    <footer>
+        <p>&copy; 2024 Library System. All rights reserved.</p>
+    </footer>
 </body>
 </html>

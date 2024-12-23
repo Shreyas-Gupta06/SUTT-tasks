@@ -35,3 +35,22 @@ class LibrarianProfile(models.Model):
 
     def __str__(self):
         return self.user.username
+    
+class Borrow(models.Model):
+    student = models.ForeignKey(StudentProfile, on_delete=models.CASCADE)
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    issued_date = models.DateField(auto_now_add=True)
+    due_date = models.DateField()
+    late_fees = models.DecimalField(max_digits=5, decimal_places=2, default=0.00)
+    
+
+class GlobalSettings(models.Model):
+    issue_period = models.IntegerField(default=7)
+    late_fees_per_day = models.DecimalField(max_digits=5, decimal_places=2, default=0.00)
+
+
+# class IssuePeriod(models.Model):
+#     issue_period_days = models.IntegerField(default=7)
+
+#     def __str__(self):
+#         return f"{self.issue_period_days} days"

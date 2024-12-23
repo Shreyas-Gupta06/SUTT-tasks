@@ -6,14 +6,14 @@ from django.contrib.auth import login,logout,authenticate
 from django.contrib import messages
 from .forms import ProfileForm
 from .models import StudentProfile
-from .models import LibrarianProfile, Book
-from .forms import LibrarianProfileForm
+from .models import LibrarianProfile, Book, Borrow, GlobalSettings
+from .forms import LibrarianProfileForm, IssuePeriodForm, GlobalSettings
 from .forms import BookForm  # Ensure you have a BookForm for creating books
 from django.http import HttpResponse
 import os
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseRedirect
-
+from datetime import datetime, timedelta
 
 from django.contrib.admin.views.decorators import staff_member_required
 
@@ -25,7 +25,57 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.http import FileResponse
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
+from .forms import LateFeesForm 
+from .models import Borrow, GlobalSettings
+from datetime import timedelta
+from django.utils import timezone
 
+
+
+@staff_member_required
+def borrowed_books(request):
+    borrowed_books = Borrow.objects.select_related('book', 'student').all()
+    return render(request, 'lib/borrowed_books.html', {'borrowed_books': borrowed_books})
+
+
+
+@staff_member_required
+def late_fees_details(request, borrow_id):
+    borrow = get_object_or_404(Borrow, id=borrow_id)
+    if request.method == 'POST':
+        form = LateFeesForm(request.POST)
+        if form.is_valid():
+            late_fees = form.cleaned_data['late_fees']
+            # Assuming Borrow model has a field for late_fees
+            borrow.late_fees = late_fees
+            borrow.save()
+            return redirect('lib:borrowed_books')
+    else:
+        form = LateFeesForm()
+    return render(request, 'lib/late_fees_details.html', {'form': form, 'borrow': borrow})
+
+@staff_member_required
+def issue_period(request):
+    global_settings = GlobalSettings.objects.first()
+    current_issue_period = global_settings.issue_period if global_settings else 'Not Set'
+
+    if request.method == 'POST':
+        form = IssuePeriodForm(request.POST)
+        if form.is_valid():
+            issue_period = form.cleaned_data['issue_period']
+            if global_settings:
+                global_settings.issue_period = issue_period
+                global_settings.save()
+            else:
+                GlobalSettings.objects.create(issue_period=issue_period)
+            return redirect('lib:issue_period')
+    else:
+        form = IssuePeriodForm()
+
+    return render(request, 'lib/issue_period.html', {
+        'form': form,
+        'current_issue_period': current_issue_period
+    })
 
 @staff_member_required
 def download_template(request):
@@ -199,6 +249,10 @@ def librarian_dashboard(request):
 
     return render(request, 'lib/librarian_dashboard.html', {'books': books})
 
+
+
+
+
 @login_required(login_url='/login/')
 def student_dashboard(request):
     query = request.GET.get('q')
@@ -206,6 +260,56 @@ def student_dashboard(request):
         books = Book.objects.filter(title__icontains=query)
     else:
         books = Book.objects.all()
-
+    
     return render(request, 'lib/student_dashboard.html', {'books': books})
 
+@login_required(login_url='/login/')
+def borrow_book(request, isbn_number):
+    book = get_object_or_404(Book, isbn_number=isbn_number)
+    student_profile = get_object_or_404(StudentProfile, user=request.user)
+    global_settings = GlobalSettings.objects.first()
+    if book.available_copies > 0:
+        book.available_copies -= 1
+        book.save()
+        
+        borrow = Borrow(student=student_profile, book=book, issued_date=datetime.now())
+        borrow.due_date = borrow.issued_date + timedelta(days = global_settings.issue_period)
+        borrow.save()
+        return redirect('lib:student_dashboard')
+    else:
+        return render(request, 'lib/student_dashboard.html', {'books': Book.objects.all(), 'error': 'Book not available'})
+
+
+
+
+
+
+
+
+
+@login_required(login_url='/login/')
+def student_borrowed_books(request):
+    student_profile = get_object_or_404(StudentProfile, user=request.user)
+    borrowed_books = Borrow.objects.filter(student=student_profile)
+    
+    # srijan is gay (hidden line, sutta if u see this brownie points for u)
+
+    return render(request, 'lib/student_borrowed_books.html', {'borrowed_books': borrowed_books})
+
+
+
+
+
+@login_required(login_url='/login/')
+def return_book(request, borrow_id):
+    borrow = get_object_or_404(Borrow, id=borrow_id)
+    book = borrow.book
+
+    # Increment the available copies
+    book.available_copies += 1
+    book.save()
+
+    # Delete the borrow record
+    borrow.delete()
+
+    return redirect('lib:student_borrowed_books')

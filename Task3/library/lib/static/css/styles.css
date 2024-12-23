@@ -5,9 +5,17 @@
     box-sizing: border-box;
 }
 
-body {
+html, body {
     font-family: Arial, sans-serif;
     background-color: #f4f4f4;
+    height: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+body > .container {
+    flex-grow: 1;
 }
 
 /* Navbar Styling */
@@ -66,41 +74,108 @@ body {
     margin-top: 20px;
 }
 
-.login-container {
+.search-form {
+    margin: 20px 0;
     text-align: center;
-    margin-top: 50px;
 }
 
-.login-container h2 {
-    font-size: 1.8rem;
+.search-form input[type="text"] {
+    padding: 10px;
+    width: 300px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+.search-form button {
+    padding: 2px 2px;  /* Reduces padding for a smaller button */
+    font-size: 0.9rem;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.search-form button:hover {
+    background-color: #45a049;
+}
+
+/* Table Styling */
+table {
+    width: 100%;
+    border-collapse: collapse;
     margin-bottom: 20px;
 }
 
-.google-login-btn {
-    display: inline-block;
-    background-color: #4285F4;
-    color: white;
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+tr:hover {
+    background-color: #f5f5f5;
+}
+
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+/* Image Styling */
+img {
+    max-width: 200px;
+    max-height: 200px;
+}
+
+/* Button Styles */
+.btn-primary {
     padding: 10px 20px;
-    font-size: 1.2rem;
+    background-color: #4CAF50;
+    color: white;
     text-decoration: none;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-primary:hover {
+    background-color: #45a049;
+}
+
+.add-books-btn {
+    margin-bottom: 20px;  /* Adds space below the button */
+}
+
+/* Form Styling */
+.form-style {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #f9f9f9;
     border-radius: 5px;
-    transition: background-color 0.3s ease;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-.google-login-btn:hover {
-    background-color: #357ae8;
+/* Footer Styling */
+footer {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+    font-size: 1.2rem;
+    margin-top: auto;  /* Push footer to the bottom */
+    width: 100%;
 }
 
-.navbar .logout {
-    margin-left: 20px;
-    color: #fff;
-    text-decoration: none;
+.footer-content p {
+    margin: 0;
+    font-size: 1.2rem;
 }
 
-.navbar .logout:hover {
-    text-decoration: underline;
-}
-
+/* Specific Classes */
 .message-container {
     margin-top: 20px;
     padding: 10px;
@@ -118,27 +193,46 @@ body {
     color: #155724;
 }
 
-.search-form {
-    margin: 20px 0;
-    text-align: center;
+/* Additional Styling for Specific Elements */
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-.search-form input[type="text"] {
-    padding: 10px;
-    width: 300px;
+h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+input[type="number"], button {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
     border: 1px solid #ccc;
-    border-radius: 5px;
+    border-radius: 4px;
 }
 
-.search-form button {
-    padding: 10px 20px;
-    background-color: #4CAF50;
+button {
+    background-color: #007bff;
     color: white;
-    border: none;
-    border-radius: 5px;
     cursor: pointer;
 }
 
-.search-form button:hover {
-    background-color: #45a049;
+button:hover {
+    background-color: #0056b3;
+}
+
+p {
+    font-size: 18px;
+    margin-bottom: 20px;
 }

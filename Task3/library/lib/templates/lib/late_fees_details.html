@@ -1,0 +1,40 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Late Fees Details</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <nav>
+        <div class="navbar">
+            <a href="{% url 'lib:home' %}" class="brand">Library System</a>
+            <div class="nav-links">
+                <a href="{% url 'lib:librarian_profile' %}" class="profile-icon">Profile</a>
+                <a href="{% url 'lib:logout_views' %}">Logout</a>
+                <a href="{% url 'lib:librarian_dashboard' %}">Dashboard</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="content-section">
+        <h1>Late Fees Details for {{ borrow.book.title }}</h1>
+        <p>Current Late Fees per Day: {{ current_late_fees }}</p>
+        <form method="POST" class="form-style">
+            {% csrf_token %}
+            <label for="late_fees">Set New Late Fees per Day:</label>
+            <input type="number" name="late_fees" id="late_fees" class="input-field" required>
+            <button type="submit" class="btn btn-primary">Set Late Fees</button>
+        </form>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2024 Library System. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

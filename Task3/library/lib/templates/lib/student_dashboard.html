@@ -5,75 +5,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Librarian Dashboard</title>
+    <title>Student Dashboard</title>
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
     <nav>
         <div class="navbar">
             <a href="{% url 'lib:home' %}" class="brand">Library System</a>
-            
             <div class="nav-links">
                 <a href="{% url 'lib:student_profile' %}" class="profile-icon">Profile</a>
+                <a href="{% url 'lib:student_borrowed_books' %}">Borrowed Books</a>
                 <a href="{% url 'lib:logout_views' %}">Logout</a>
             </div>
         </div>
     </nav>
 
-    <div class="welcome-message">
-        <h2>Welcome to the Student Dashboard</h2>
-        <p>Access all the resources and services available to you.</p>
+    <div class="content-section">
+        <div class="welcome-message">
+            <h2>Welcome to the Student Dashboard</h2>
+            <p>Access all the resources and services available to you.</p>
+        </div>
+
+        <!-- Search Form -->
+        <div class="search-form">
+            <form method="GET" action="{% url 'lib:student_dashboard' %}">
+                <input type="text" name="q" placeholder="Search for a book by title" value="{{ request.GET.q }}">
+                <button type="submit">Search</button>
+            </form>
+        </div>
+
+        <!-- Book List Section -->
+        <div class="book-list">
+            <h3>Book List</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Author</th>
+                        <th>Genre</th>
+                        <th>Published Date</th>
+                        <th>ISBN Number</th>
+                        <th>Available Copies</th>
+                        <th>Image</th>
+                        <th>Borrow</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for book in books %}
+                    <tr>
+                        <td>
+                            <a href="{% url 'lib:book_detail_stu' book.isbn_number %}">{{ book.title }}</a>
+                        </td>
+                        <td>{{ book.author }}</td>
+                        <td>{{ book.genre }}</td>
+                        <td>{{ book.published_date }}</td>
+                        <td>{{ book.isbn_number }}</td>
+                        <td>{{ book.available_copies }}</td>
+                        <td>
+                            {% if book.image %}
+                                <img src="{{ book.image.url }}" alt="{{ book.title }}">
+                            {% else %}
+                                No image available
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if book.available_copies > 0 %}
+                                <form method="POST" action="{% url 'lib:borrow_book' book.isbn_number %}">
+                                    {% csrf_token %}
+                                    <button type="submit">Borrow Book</button>
+                                </form>
+                            {% else %}
+                                <span>Not available</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8">No books available.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 
-    <!-- Search Form -->
-    <div class="search-form">
-        <form method="GET" action="{% url 'lib:student_dashboard' %}">
-            <input type="text" name="q" placeholder="Search for a book by title" value="{{ request.GET.q }}">
-            <button type="submit">Search</button>
-        </form>
-    </div>
-
-    <!-- Book List Section -->
-    <div class="book-list">
-        <h3>Book List</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th>Title</th>
-                    <th>Author</th>
-                    <th>Genre</th>
-                    <th>Published Date</th>
-                    <th>ISBN Number</th>
-                    <th>Available Copies</th>
-                    <th>Image</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for book in books %}
-                <tr>
-                    <td><a href="{% url 'lib:book_detail_stu' book.isbn_number %}">{{ book.title }}</a></td>
-                    <td>{{ book.author }}</td>
-                    <td>{{ book.genre }}</td>
-                    <td>{{ book.published_date }}</td>
-                    <td>{{ book.isbn_number }}</td>
-                    <td>{{ book.available_copies }}</td>
-                    <td>
-                        {% if book.image %}
-                            <img src="{{ book.image.url }}" alt="{{ book.title }}" style="max-width: 100px; max-height: 100px;">
-                        {% else %}
-                            No image available
-                        {% endif %}
-                    </td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="7">No books available.</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2025 Library Management System</p>
+        </div>
+    </footer>
 
 </body>
 </html>
