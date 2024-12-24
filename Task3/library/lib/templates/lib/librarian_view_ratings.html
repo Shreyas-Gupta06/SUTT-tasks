@@ -1,0 +1,70 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Librarian View Ratings</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <nav>
+        <div class="navbar">
+            <a href="{% url 'lib:home' %}" class="brand">Library System</a>
+            <div class="nav-links">
+                <a href="{% url 'lib:librarian_dashboard' %}">Dashboard</a>
+                <a href="{% url 'lib:logout_views' %}">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="content-section">
+        <h2>Books and Ratings</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Book Title</th>
+                    <th>Average Rating</th>
+                    <th>Total Ratings</th>
+                    <th>Rated By</th> <!-- Added column for students who rated -->
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in books_with_ratings %}
+                <tr>
+                    <td>{{ item.book.title }}</td>
+                    <td>
+                        {% if item.average_rating %}
+                            {{ item.average_rating|floatformat:1 }}
+                        {% else %}
+                            No rating yet
+                        {% endif %}
+                    </td>
+                    <td>{{ item.total_ratings }}</td>
+                    <td>
+                        {% if item.rated_students %}
+                            {% for student in item.rated_students %}
+                                <p>{{ student }}</p>
+                            {% endfor %}
+                        {% else %}
+                            No students rated yet
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4">No books available.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2025 Library Management System</p>
+        </div>
+    </footer>
+</body>
+</html>

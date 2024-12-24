@@ -39,5 +39,7 @@ urlpatterns = [
      path('feedback/', views.feedback_submission, name='student_feedback'),
      path('view_feedback/', views.view_feedback, name='view_feedback'),
 
+     path('rate_books/', views.rate_books, name='rate_books'),
+     path('librarian/ratings/', views.librarian_view_ratings, name='librarian_view_ratings'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

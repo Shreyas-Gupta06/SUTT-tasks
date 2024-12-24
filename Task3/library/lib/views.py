@@ -6,7 +6,7 @@ from django.contrib.auth import login,logout,authenticate
 from django.contrib import messages
 from .forms import ProfileForm
 from .models import StudentProfile
-from .models import LibrarianProfile, Book, Borrow, GlobalSettings
+from .models import LibrarianProfile, Book, Borrow, GlobalSettings, BorrowedHistory
 from .forms import LibrarianProfileForm, IssuePeriodForm, GlobalSettings
 from .forms import BookForm  # Ensure you have a BookForm for creating books
 from django.http import HttpResponse
@@ -30,9 +30,77 @@ from .models import Borrow, GlobalSettings
 from datetime import timedelta
 from django.utils import timezone
 from .forms import FeedbackForm
-
+from django.db.models import Avg
 from .models import Feedback  # Assuming Feedback model exists
 
+from .models import Book, Borrow, BookRating
+from .forms import RatingForm
+
+
+@staff_member_required
+def librarian_view_ratings(request):
+    # Assuming `BookRating` model has `book`, `student`, and `rating` fields
+    books_with_ratings = []
+    books = Book.objects.all()
+
+    for book in books:
+        ratings = BookRating.objects.filter(book=book)
+        total_ratings = ratings.count()
+        average_rating = ratings.aggregate(Avg('rating'))['rating__avg']
+        rated_students = [rating.student.user.username for rating in ratings]  # Accessing the username via `rating.student.user.username`
+
+        books_with_ratings.append({
+            'book': book,
+            'average_rating': average_rating,
+            'total_ratings': total_ratings,
+            'rated_students': rated_students,  # Passing rated students info
+        })
+
+    return render(request, 'lib/librarian_view_ratings.html', {'books_with_ratings': books_with_ratings})
+
+
+
+@login_required(login_url='/login/')
+def rate_books(request):
+    user = request.user
+    try:
+        student_profile = StudentProfile.objects.get(user=user)
+    except StudentProfile.DoesNotExist:
+        messages.error(request, 'Student profile does not exist.')
+        return redirect('lib:student_dashboard')
+    
+    borrowed_books = BorrowedHistory.objects.filter(student=student_profile)
+
+    if request.method == 'POST':
+        form = RatingForm(request.POST)
+        if form.is_valid():
+            book_id = request.POST.get('book_id')
+            book = get_object_or_404(Book, id=book_id)
+            rating, created = BookRating.objects.update_or_create(
+                student=student_profile, 
+                book=book, 
+                defaults={'rating': form.cleaned_data['rating']}
+            )
+            book.total_ratings = BookRating.objects.filter(book=book).count()
+            book.total_rating_value = sum(r.rating for r in BookRating.objects.filter(book=book))
+            book.save()
+            messages.success(request, 'Your rating has been submitted.')
+            return redirect('lib:rate_books')
+    else:
+        form = RatingForm()
+
+    context = {
+        'borrowed_books': borrowed_books,
+        'rating_form': form,
+        
+    }
+
+    
+
+    return render(request, 'lib/rate_books.html', context)
+
+
+@staff_member_required
 def view_feedback(request):
     feedbacks = Feedback.objects.all()
     return render(request, 'lib/view_feedback.html', {'feedbacks': feedbacks})
@@ -277,16 +345,31 @@ def borrow_book(request, isbn_number):
     book = get_object_or_404(Book, isbn_number=isbn_number)
     student_profile = get_object_or_404(StudentProfile, user=request.user)
     global_settings = GlobalSettings.objects.first()
+
+    # Check if the book is available
     if book.available_copies > 0:
+        # Reduce the available copies by 1
         book.available_copies -= 1
         book.save()
-        
+
+        # Create a Borrow entry
         borrow = Borrow(student=student_profile, book=book, issued_date=datetime.now())
-        borrow.due_date = borrow.issued_date + timedelta(days = global_settings.issue_period)
+        borrow.due_date = borrow.issued_date + timedelta(days=global_settings.issue_period)
         borrow.save()
+
+        # Create a BorrowedHistory entry for tracking
+        BorrowedHistory.objects.create(
+            student=student_profile,
+            book=book,
+            issued_date=borrow.issued_date,
+            return_date=borrow.due_date,
+        )
+
+        messages.success(request, f'You have successfully borrowed {book.title}.')
         return redirect('lib:student_dashboard')
     else:
-        return render(request, 'lib/student_dashboard.html', {'books': Book.objects.all(), 'error': 'Book not available'})
+        messages.error(request, f'{book.title} is currently not available.')
+        return render(request, 'lib/student_dashboard.html', {'books': Book.objects.all()})
 
 
 
@@ -314,7 +397,7 @@ def student_borrowed_books(request):
     student_profile = get_object_or_404(StudentProfile, user=request.user)
     borrowed_books = Borrow.objects.filter(student=student_profile)
     
-    # srijan is gay (hidden line, sutta if u see this brownie points for u)
+    # srijan is fat (hidden line, sutta if u see this brownie points for u)
 
     return render(request, 'lib/student_borrowed_books.html', {'borrowed_books': borrowed_books})
 

@@ -1,7 +1,7 @@
 # lib/models.py
 from django.db import models
 from django.contrib.auth.models import User
-
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 from django.db import models
 
@@ -13,10 +13,17 @@ class Book(models.Model):
     isbn_number = models.CharField(max_length=13, unique=True)
     available_copies = models.IntegerField()
     image = models.ImageField(upload_to='book_images/', blank=True, null=True)  # Add this line
+    total_ratings = models.IntegerField(default=0)
+    total_rating_value = models.IntegerField(default=0)
 
     def __str__(self):
         return self.title
-
+    
+    @property
+    def average_rating(self):
+        if self.total_ratings > 0:
+            return self.total_rating_value / self.total_ratings
+        return 0
 
 
 
@@ -58,3 +65,23 @@ class Feedback(models.Model):
 
     def __str__(self):
         return self.subject
+    
+
+class BookRating(models.Model):
+    student = models.ForeignKey(StudentProfile, on_delete=models.CASCADE)
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    rating = models.IntegerField()
+    date_rated = models.DateField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('student', 'book')
+
+
+class BorrowedHistory(models.Model):
+    student = models.ForeignKey(StudentProfile, on_delete=models.CASCADE)
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    issued_date = models.DateField()
+    return_date = models.DateField()
+
+    def __str__(self):
+        return f"{self.student.user.username} - {self.book.title}"

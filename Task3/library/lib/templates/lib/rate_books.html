@@ -1,0 +1,57 @@
+    {% load static %}
+
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Rate Borrowed Books</title>
+        <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    </head>
+    <body>
+        <nav>
+            <div class="navbar">
+                <a href="{% url 'lib:home' %}" class="brand">Library System</a>
+                <div class="nav-links">
+                    <a href="{% url 'lib:student_dashboard' %}">Dashboard</a>
+                    <a href="{% url 'lib:logout_views' %}">Logout</a>
+                </div>
+            </div>
+        </nav>
+
+        <div class="content-section">
+            <h2>Rate Borrowed Books</h2>
+            {% if messages %}
+                {% for message in messages %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+            <div class="book-list">
+                {% for history in borrowed_books %}
+                <div class="book-item">
+                    {% if history.book.image %}
+                    <img src="{{ history.book.image.url }}" alt="{{ history.book.title }}" class="book-cover">
+                    {% endif %}
+                    <p>{{ history.book.title }}</p>
+                    <p>ISBN: {{ history.book.isbn_number }}</p>
+                    <p>Issued Date: {{ history.issued_date }}</p>
+                    <form method="POST">
+                        {% csrf_token %}
+                        {{ rating_form.as_p }}
+                        <input type="hidden" name="book_id" value="{{ history.book.id }}">
+                        <button type="submit">Rate</button>
+                    </form>
+                </div>
+                {% empty %}
+                <p>No books borrowed yet.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <footer>
+            <div class="footer-content">
+                <p>&copy; 2025 Library Management System</p>
+            </div>
+        </footer>
+    </body>
+    </html>
