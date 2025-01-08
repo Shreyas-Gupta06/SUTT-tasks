@@ -1,40 +1,23 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth.views import LoginView
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth import login,logout,authenticate
-from django.contrib import messages
-from .forms import ProfileForm
-from .models import StudentProfile
-from .models import LibrarianProfile, Book, Borrow, GlobalSettings, BorrowedHistory
-from .forms import LibrarianProfileForm, IssuePeriodForm, GlobalSettings
-from .forms import BookForm  # Ensure you have a BookForm for creating books
-from django.http import HttpResponse
-import os
-from django.conf import settings
-from django.http import HttpResponse, HttpResponseRedirect
 from datetime import datetime, timedelta
 
-from django.contrib.admin.views.decorators import staff_member_required
-
-from .forms import BookForm
-
+import os
 import pandas as pd
-from django.urls import reverse
-from django.contrib.admin.views.decorators import staff_member_required
-from django.http import FileResponse
-from django.shortcuts import get_object_or_404
-from django.db.models import Q
-from .forms import LateFeesForm 
-from .models import Borrow, GlobalSettings
-from datetime import timedelta
-from django.utils import timezone
-from .forms import FeedbackForm
-from django.db.models import Avg
-from .models import Feedback  # Assuming Feedback model exists
 
-from .models import Book, Borrow, BookRating
-from .forms import RatingForm
+from django.conf import settings
+from django.contrib import messages
+from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.views import LoginView
+from django.db.models import Avg, Q
+from django.http import FileResponse, HttpResponse, HttpResponseRedirect
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
+from django.utils import timezone
+
+from .forms import (BookForm, FeedbackForm, IssuePeriodForm, LateFeesForm, LibrarianProfileForm, ProfileForm, RatingForm)
+from .models import (Book, BookRating, Borrow, BorrowedHistory, Feedback, GlobalSettings, LibrarianProfile, StudentProfile)
 
 
 @staff_member_required
@@ -350,7 +333,7 @@ def borrow_book(request, isbn_number):
     if book.available_copies > 0:
         # Reduce the available copies by 1
         book.available_copies -= 1
-        book.save()
+        book.save() 
 
         # Create a Borrow entry
         borrow = Borrow(student=student_profile, book=book, issued_date=datetime.now())

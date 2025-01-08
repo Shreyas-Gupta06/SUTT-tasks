@@ -173,8 +173,9 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 #test
 # Google OAuth settings (replace with your actual keys)
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '189266254503-q8j879fv5v71avdbfbt06hir8mp6ii51.apps.googleusercontent.com'
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'
+
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = ''
 
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = "none"
@@ -187,7 +188,7 @@ LOGIN_REDIRECT_URL = '/accounts/profile/'  # This will call the custom_login_red
 LOGIN_URL = '/'
 
 # Update settings.py to use the custom adapters
-ACCOUNT_ADAPTER = 'lib.adapters.MyAccountAdapter'
+# ACCOUNT_ADAPTER = 'lib.adapters.MyAccountAdapter'
 SOCIALACCOUNT_ADAPTER = 'lib.adapters.MySocialAccountAdapter'
 
 
