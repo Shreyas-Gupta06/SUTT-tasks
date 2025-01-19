@@ -1,6 +1,6 @@
 # SUTT
 # SUTT-tasks
-This contains my SUTT Tasks. Task 3 website: https://shreyasgupta06.pythonanywhere.com/ 
+This contains my SUTT Tasks. Task 3 website: https://sg06.pythonanywhere.com/, https://shreyasgupta06.pythonanywhere.com/ 
 
 **Task 1** was extracting data from a excel sheet and converting to json using pandas. 
 
