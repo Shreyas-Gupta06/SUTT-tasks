@@ -10,8 +10,10 @@ class Book(models.Model):
     author = models.CharField(max_length=200)
     genre = models.CharField(max_length=200)
     published_date = models.DateField()
-    isbn_number = models.CharField(max_length=13, unique=True)
-    available_copies = models.IntegerField()
+    isbn_number = models.BigIntegerField(unique=True)
+    available_copies = models.IntegerField(
+    validators=[MinValueValidator(0)]
+)
     image = models.ImageField(upload_to='book_images/', blank=True, null=True)  # Add this line
     total_ratings = models.IntegerField(default=0)
     total_rating_value = models.IntegerField(default=0)
@@ -37,7 +39,7 @@ class StudentProfile(models.Model):
 
 class LibrarianProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    psrn_number = models.CharField(max_length=20, blank=True, null=True)
+    psrn_number = models.CharField(max_length=20, blank=True, null=True, unique=True)
     name = models.CharField(max_length=100, blank=True, null=True)
 
     def __str__(self):

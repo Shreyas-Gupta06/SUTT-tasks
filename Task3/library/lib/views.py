@@ -18,7 +18,7 @@ from django.utils import timezone
 
 from .forms import (BookForm, FeedbackForm, IssuePeriodForm, LateFeesForm, LibrarianProfileForm, ProfileForm, RatingForm)
 from .models import (Book, BookRating, Borrow, BorrowedHistory, Feedback, GlobalSettings, LibrarianProfile, StudentProfile)
-
+from django.core.paginator import Paginator
 
 @staff_member_required
 def librarian_view_ratings(request):
@@ -75,10 +75,7 @@ def rate_books(request):
     context = {
         'borrowed_books': borrowed_books,
         'rating_form': form,
-        
     }
-
-    
 
     return render(request, 'lib/rate_books.html', context)
 
@@ -161,6 +158,11 @@ def book_detail_lib(request, isbn_number):
 
     return render(request, 'lib/book_detail_lib.html', {'form': form, 'book': book})
 
+@staff_member_required
+def delete_book(request, isbn_number):
+    book = get_object_or_404(Book, isbn_number=isbn_number)
+    book.delete()
+    return redirect('lib:librarian_dashboard')
 
 @login_required(login_url='/login/')
 def book_detail_stu(request, isbn_number):
@@ -225,7 +227,7 @@ def librarian_profile(request):
     else:
         form = LibrarianProfileForm(instance=profile)
 
-    return render(request, 'lib/librarian_profile.html', {'form': form})    
+    return render(request, 'lib/librarian_profile.html', {'form': form, 'librarian_profile': profile})    
 
 def home(request):
     return render(request, 'lib/base.html')
@@ -252,7 +254,11 @@ def student_profile(request):
     else:
         form = ProfileForm(instance=user_profile)  # Pre-fill form with current profile data
 
-    return render(request, 'lib/student_profile.html', {'form': form})
+    return render(request, 'lib/student_profile.html', {
+        'form': form,
+        'user': request.user,
+        'student_profile': user_profile
+    })
 
 @login_required
 def custom_login_redirect(request):
@@ -306,8 +312,13 @@ def librarian_dashboard(request):
         books = Book.objects.filter(title__icontains=query)
     else:
         books = Book.objects.all()
+    paginator = Paginator(books, 5)  # Show 5 books per page
 
-    return render(request, 'lib/librarian_dashboard.html', {'books': books})
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+
+    return render(request, 'lib/librarian_dashboard.html', {'books': books,'page_obj': page_obj})
 
 
 
@@ -315,13 +326,21 @@ def librarian_dashboard(request):
 
 @login_required(login_url='/login/')
 def student_dashboard(request):
+    
+
     query = request.GET.get('q')
     if query:
         books = Book.objects.filter(title__icontains=query)
     else:
         books = Book.objects.all()
     
-    return render(request, 'lib/student_dashboard.html', {'books': books})
+    paginator = Paginator(books, 5)  # Show 5 books per page
+
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    
+    return render(request, 'lib/student_dashboard.html', {'books': books, 'page_obj': page_obj})
 
 @login_required(login_url='/login/')
 def borrow_book(request, isbn_number):
@@ -330,7 +349,7 @@ def borrow_book(request, isbn_number):
     global_settings = GlobalSettings.objects.first()
 
     # Check if the book is available
-    if book.available_copies > 0:
+    if (book.available_copies > 0):
         # Reduce the available copies by 1
         book.available_copies -= 1
         book.save() 
@@ -377,12 +396,33 @@ def feedback_submission(request):
 
 @login_required(login_url='/login/')
 def student_borrowed_books(request):
-    student_profile = get_object_or_404(StudentProfile, user=request.user)
-    borrowed_books = Borrow.objects.filter(student=student_profile)
-    
-    # srijan is fat (hidden line, sutta if u see this brownie points for u)
+    user = request.user
+    student_profile = StudentProfile.objects.get(user=user)
+    borrowed_books = Borrow.objects.filter(student=student_profile).order_by('-issued_date')
+    global_settings = GlobalSettings.objects.first()
 
-    return render(request, 'lib/student_borrowed_books.html', {'borrowed_books': borrowed_books})
+    # Calculate late fees dynamically
+    for borrow in borrowed_books:
+        if borrow.due_date < datetime.now().date():
+            days_late = (datetime.now().date() - borrow.due_date).days
+            borrow.late_fees = days_late * global_settings.late_fees_per_day
+        else:
+            borrow.late_fees = 0
+
+    paginator = Paginator(borrowed_books, 5)  # Show 5 borrowed books per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'borrowed_books': page_obj,
+    }
+    return render(request, 'lib/student_borrowed_books.html', context)
+
+
+@staff_member_required
+def librarian_borrowed_books(request):
+
+    return render(request, 'lib/librarian_borrowed_books.html')
 
 
 
@@ -401,3 +441,6 @@ def return_book(request, borrow_id):
     borrow.delete()
 
     return redirect('lib:student_borrowed_books')
+
+def help_view(request):
+    return render(request, 'lib/help.html')

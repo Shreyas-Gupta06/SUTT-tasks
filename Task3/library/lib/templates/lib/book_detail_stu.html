@@ -5,66 +5,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Book Detail</title>
+    <title>{{ book.title }} - Book Details</title>
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
-    <nav>
-        <div class="navbar">
-            <a href="{% url 'lib:home' %}" class="brand">Library System</a>
-            <div class="nav-links">
-                <a href="{% url 'lib:student_dashboard' %}" class="profile-icon">Dashboard</a>
-                <a href="{% url 'lib:logout_views' %}">Logout</a>
-            </div>
+<body class="d-flex flex-column min-vh-100">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="{% url 'lib:home' %}" style="font-size: 1.5rem;">Library System</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{% url 'lib:student_dashboard' %}">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{% url 'lib:student_profile' %}">Profile</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{% url 'lib:student_borrowed_books' %}">Borrowed Books</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{% url 'lib:student_feedback' %}">Feedback</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{% url 'lib:rate_books' %}">Rate Borrowed Books</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link btn btn-danger text-white" href="{% url 'lib:logout_views' %}">Logout</a>
+                </li>
+            </ul>
         </div>
     </nav>
 
-    <div class="container">
-        <h2>Book Detail</h2>
-        
-        <div class="book-detail">
-            <div class="form-group">
-                <label for="id_title">Title:</label>
-                <input type="text" name="title" id="id_title" value="{{ book.title }}" readonly>
-            </div>
-            <div class="form-group">
-                <label for="id_author">Author:</label>
-                <input type="text" name="author" id="id_author" value="{{ book.author }}" readonly>
-            </div>
-            <div class="form-group">
-                <label for="id_genre">Genre:</label>
-                <input type="text" name="genre" id="id_genre" value="{{ book.genre }}" readonly>
-            </div>
-            <div class="form-group">
-                <label for="id_published_date">Published Date:</label>
-                <input type="text" name="published_date" id="id_published_date" value="{{ book.published_date }}" readonly>
-            </div>
-            <div class="form-group">
-                <label for="id_isbn_number">ISBN Number:</label>
-                <input type="text" name="isbn_number" id="id_isbn_number" value="{{ book.isbn_number }}" readonly>
-            </div>
-            <div class="form-group">
-                <label for="id_available_copies">Available Copies:</label>
-                <input type="number" name="available_copies" id="id_available_copies" value="{{ book.available_copies }}" readonly>
-            </div>
-            <div class="form-group">
-                <label for="id_image">Image:</label>
-                <div class="current-image">
-                    {% if book.image %}
-                        <img src="{{ book.image.url }}" alt="{{ book.title }}" style="max-width: 200px;">
-                    {% else %}
-                        <p>No image available</p>
-                    {% endif %}
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-dark text-white text-center">
+                        <h3>{{ book.title }} - Book Details</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="id_title">Title</label>
+                            <input type="text" class="form-control" name="title" id="id_title" value="{{ book.title }}" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="id_author">Author</label>
+                            <input type="text" class="form-control" name="author" id="id_author" value="{{ book.author }}" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="id_genre">Genre</label>
+                            <input type="text" class="form-control" name="genre" id="id_genre" value="{{ book.genre }}" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="id_isbn">ISBN Number</label>
+                            <input type="text" class="form-control" name="isbn_number" id="id_isbn_number" value="{{ book.isbn_number }}" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="id_published_date">Published Date</label>
+                            <input type="text" class="form-control" name="published_date" id="id_published_date" value="{{ book.published_date }}" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="id_available_copies">Available Copies</label>
+                            <input type="text" class="form-control" name="available_copies" id="id_available_copies" value="{{ book.available_copies }}" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="id_image">Image</label>
+                            {% if book.image %}
+                                <img src="{{ book.image.url }}" alt="{{ book.title }}" class="img-thumbnail" style="max-width: 200px;">
+                            {% else %}
+                                No image available
+                            {% endif %}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <footer>
-        <div class="footer-content">
-            <p>&copy; 2024 Library System. All rights reserved.</p>
-        </div>
-    </footer>
+    <div class="text-center mt-auto py-2" style="background-color: #343a40; color: white;">
+        <p>&copy; 2024 Library System. All rights reserved.</p>
+    </div>
 
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

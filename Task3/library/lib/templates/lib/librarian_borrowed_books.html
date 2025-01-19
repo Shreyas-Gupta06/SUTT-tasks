@@ -1,0 +1,127 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Borrowed Books</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="d-flex flex-column min-vh-100">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="{% url 'lib:home' %}" style="font-size: 1.5rem;">Library System</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{% url 'lib:librarian_dashboard' %}">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{% url 'lib:librarian_profile' %}">Profile</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{% url 'lib:borrowed_books' %}">Borrowed Books</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{% url 'lib:issue_period' %}">Issue Period</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{% url 'lib:view_feedback' %}">View Feedback</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{% url 'lib:librarian_view_ratings' %}">View Ratings</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link btn btn-danger text-white" href="{% url 'lib:logout_views' %}">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <h2 class="text-center mb-4">Borrowed Books</h2>
+        <table class="table table-striped">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Title</th>
+                    <th>ISBN Number</th>
+                    <th>Image</th>
+                    <th>Issued Date</th>
+                    <th>Due Date</th>
+                    <th>Late Fees</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for borrow in borrowed_books %}
+                <tr>
+                    <td><a href="{% url 'lib:book_detail_lib' borrow.book.isbn_number %}">{{ borrow.book.title }}</a></td>
+                    <td>{{ borrow.book.isbn_number }}</td>
+                    <td>
+                        {% if borrow.book.image %}
+                            <img src="{{ borrow.book.image.url }}" alt="{{ borrow.book.title }}" class="img-thumbnail" style="max-width: 100px;">
+                        {% else %}
+                            No image available
+                        {% endif %}
+                    </td>
+                    <td>{{ borrow.issued_date }}</td>
+                    <td>{{ borrow.due_date }}</td>
+                    <td>
+                        {% if borrow.late_fees > 0 %}
+                            ${{ borrow.late_fees }}
+                        {% else %}
+                            No late fees
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{% url 'lib:return_book' borrow.id %}" class="btn btn-sm btn-success">Return</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="text-center">No books borrowed yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                {% if borrowed_books.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ borrowed_books.previous_page_number }}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                {% endif %}
+                {% for num in borrowed_books.paginator.page_range %}
+                <li class="page-item {% if borrowed_books.number == num %}active{% endif %}">
+                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                </li>
+                {% endfor %}
+                {% if borrowed_books.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ borrowed_books.next_page_number }}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+
+    <div class="text-center mt-auto py-2" style="background-color: #343a40; color: white;">
+        <p>&copy; 2024 Library System. All rights reserved.</p>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

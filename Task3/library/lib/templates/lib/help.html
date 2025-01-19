@@ -1,0 +1,75 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help Page</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .credentials {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 15px;
+        }
+        .credentials p {
+            margin: 0;
+        }
+        .credentials strong {
+            color: #dc3545;
+        }
+    </style>
+</head>
+<body class="d-flex flex-column min-vh-100">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="{% url 'lib:home' %}" style="font-size: 1.5rem;">Library System</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{% url 'lib:student_login' %}">Student</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{% url 'lib:librarian_login' %}">Librarian Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="/admin/">Admin</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{% url 'lib:help' %}">Help</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <div class="card">
+            <div class="card-body">
+                <h2 class="card-title text-center">Help Page</h2>
+                <p class="card-text">Hello, welcome to the help page</p>
+                <div class="credentials">
+                    <p><strong>Admin credentials are:</strong></p>
+                    <p><strong>Username:</strong> shreyas</p>
+                    <p><strong>Password:</strong> test123</p>
+                </div>
+                <p class="card-text mt-3">This is a Django superuser. You can go to the admin panel and manage/add librarian profiles, student profiles, books, borrows, etc.</p>
+                <p class="card-text">Click on "Add Librarian Profile" to add a new one and MARK AS STAFF to login to the librarian portal because only staffed users are allowed to login. Students aren't staff.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mt-auto py-2" style="background-color: #343a40; color: white;">
+        <p>&copy; 2024 Library System. All rights reserved.</p>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

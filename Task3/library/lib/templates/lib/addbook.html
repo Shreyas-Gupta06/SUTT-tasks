@@ -7,64 +7,114 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Book</title>
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
-    <nav>
-        <div class="navbar">
-            <a href="{% url 'lib:librarian_dashboard' %}" class="brand">Library System</a>
-            <div class="nav-links">
-                <a href="{% url 'lib:librarian_profile' %}" class="profile-icon">Profile</a>
-                <a href="{% url 'lib:logout_views' %}">Logout</a>
-            </div>
+<body class="d-flex flex-column min-vh-100">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="{% url 'lib:home' %}" style="font-size: 1.5rem;">Library System</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{% url 'lib:librarian_dashboard' %}">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{% url 'lib:librarian_profile' %}">Profile</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{% url 'lib:borrowed_books' %}">Borrowed Books</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{% url 'lib:issue_period' %}">Issue Period</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{% url 'lib:view_feedback' %}">View Feedback</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{% url 'lib:librarian_view_ratings' %}">View Ratings</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link btn btn-danger text-white" href="{% url 'lib:logout_views' %}">Logout</a>
+                </li>
+            </ul>
         </div>
     </nav>
 
-    <div class="container">
-        <h2>Add Book Manually</h2>
-        <form method="post" action="{% url 'lib:add_book' %}" enctype="multipart/form-data">
-            {% csrf_token %}
-            <label for="id_title">Title:</label>
-            <input type="text" name="title" id="id_title" required>
-            <br>
-            <label for="id_author">Author:</label>
-            <input type="text" name="author" id="id_author" required>
-            <br>
-            <label for="id_genre">Genre:</label>
-            <input type="text" name="genre" id="id_genre" required>
-            <br>
-            <label for="id_published_date">Published Date:</label>
-            <input type="date" name="published_date" id="id_published_date" required>
-            <br>
-            <label for="id_isbn_number">ISBN Number:</label>
-            <input type="text" name="isbn_number" id="id_isbn_number" required>
-            <br>
-            <label for="id_available_copies">Available Copies:</label>
-            <input type="number" name="available_copies" id="id_available_copies" required>
-            <br>
-            <label for="id_image">Image:</label>
-            <input type="file" name="image" id="id_image">
-            <br>
-            <button type="submit" class="btn btn-primary">Add Book</button>
-        </form>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-dark text-white text-center">
+                        <h3>Add Book Manually</h3>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" action="{% url 'lib:add_book' %}" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="id_title">Title</label>
+                                <input type="text" class="form-control" name="title" id="id_title" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="id_author">Author</label>
+                                <input type="text" class="form-control" name="author" id="id_author" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="id_genre">Genre</label>
+                                <input type="text" class="form-control" name="genre" id="id_genre" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="id_isbn">ISBN Number</label>
+                                <input type="text" class="form-control" name="isbn" id="id_isbn" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="id_published_date">Published Date</label>
+                                <input type="date" class="form-control" name="published_date" id="id_published_date" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="id_copies">Available Copies</label>
+                                <input type="number" class="form-control" name="copies" id="id_copies" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="id_image">Image</label>
+                                <input type="file" class="form-control-file" name="image" id="id_image">
+                            </div>
+                            <button type="submit" class="btn btn-success btn-block">Add Book</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
 
-        <hr>
-
-        <h2>Upload Books via Excel</h2>
-        <a href="{% url 'lib:download_template' %}" class="btn btn-secondary">Download Template</a>
-        <form method="post" action="{% url 'lib:upload_books' %}" enctype="multipart/form-data">
-            {% csrf_token %}
-            <label for="excel_file">Upload Excel File</label>
-            <input type="file" name="excel_file" id="excel_file" required>
-            <button type="submit" class="btn btn-primary">Upload</button>
-        </form>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-dark text-white text-center">
+                        <h3>Upload Books via Excel</h3>
+                    </div>
+                    <div class="card-body">
+                        <a href="{% url 'lib:download_template' %}" class="btn btn-secondary mb-3">Download Template</a>
+                        <form method="post" action="{% url 'lib:upload_books' %}" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="excel_file">Upload Excel File</label>
+                                <input type="file" class="form-control-file" name="excel_file" id="excel_file" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block">Upload</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- Footer Section -->
-    <footer>
-        <div class="footer-content">
-            <p>&copy; 2024 Library System. All rights reserved.</p>
-        </div>
-    </footer>
+    <div class="text-center mt-auto py-2" style="background-color: #343a40; color: white;">
+        <p>&copy; 2024 Library System. All rights reserved.</p>
+    </div>
 
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

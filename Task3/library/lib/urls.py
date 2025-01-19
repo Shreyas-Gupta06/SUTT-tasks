@@ -19,6 +19,7 @@ urlpatterns = [
     
     path('librarian/login/', views.librarian_login, name='librarian_login'),
     path('librarian/dashboard/', views.librarian_dashboard, name='librarian_dashboard'),
+    path('librarian/delete/<str:isbn_number>/', views.delete_book, name='delete_book'),
     path('accounts/profile/', views.custom_login_redirect, name='custom_login_redirect'),
     path('librarian/profile/', views.librarian_profile, name='librarian_profile'),
     
@@ -41,5 +42,6 @@ urlpatterns = [
 
      path('rate_books/', views.rate_books, name='rate_books'),
      path('librarian/ratings/', views.librarian_view_ratings, name='librarian_view_ratings'),
+     path('help/', views.help_view, name='help'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

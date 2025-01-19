@@ -1,57 +1,98 @@
-    {% load static %}
+{% load static %}
 
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Rate Borrowed Books</title>
-        <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-    </head>
-    <body>
-        <nav>
-            <div class="navbar">
-                <a href="{% url 'lib:home' %}" class="brand">Library System</a>
-                <div class="nav-links">
-                    <a href="{% url 'lib:student_dashboard' %}">Dashboard</a>
-                    <a href="{% url 'lib:logout_views' %}">Logout</a>
-                </div>
-            </div>
-        </nav>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rate Borrowed Books</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="d-flex flex-column min-vh-100">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="{% url 'lib:home' %}" style="font-size: 1.5rem;">Library System</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{% url 'lib:student_dashboard' %}">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{% url 'lib:student_profile' %}">Profile</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{% url 'lib:student_borrowed_books' %}">Borrowed Books</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{% url 'lib:student_feedback' %}">Feedback</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{% url 'lib:rate_books' %}">Rate Borrowed Books</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link btn btn-danger text-white" href="{% url 'lib:logout_views' %}">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
 
-        <div class="content-section">
-            <h2>Rate Borrowed Books</h2>
-            {% if messages %}
+    <div class="container mt-5">
+        <h2 class="text-center mb-4">Rate Borrowed Books</h2>
+        {% if messages %}
+            <div class="alert alert-info">
                 {% for message in messages %}
                     <p>{{ message }}</p>
                 {% endfor %}
-            {% endif %}
-            <div class="book-list">
-                {% for history in borrowed_books %}
-                <div class="book-item">
-                    {% if history.book.image %}
-                    <img src="{{ history.book.image.url }}" alt="{{ history.book.title }}" class="book-cover">
-                    {% endif %}
-                    <p>{{ history.book.title }}</p>
-                    <p>ISBN: {{ history.book.isbn_number }}</p>
-                    <p>Issued Date: {{ history.issued_date }}</p>
-                    <form method="POST">
-                        {% csrf_token %}
-                        {{ rating_form.as_p }}
-                        <input type="hidden" name="book_id" value="{{ history.book.id }}">
-                        <button type="submit">Rate</button>
-                    </form>
+            </div>
+        {% endif %}
+        <div class="row">
+            {% for history in borrowed_books %}
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        {% if history.book.image %}
+                        <img src="{{ history.book.image.url }}" alt="{{ history.book.title }}" class="img-thumbnail mb-3" style="max-width: 100px;">
+                        {% endif %}
+                        <h5 class="card-title"><a href="{% url 'lib:book_detail_stu' history.book.isbn_number %}">{{ history.book.title }}</a></h5>
+                        <p class="card-text"><strong>ISBN:</strong> {{ history.book.isbn_number }}</p>
+                        <p class="card-text"><strong>Issued Date:</strong> {{ history.issued_date }}</p>
+                        <form method="POST">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="rating_{{ history.book.id }}">Rating</label>
+                                <select class="form-control" id="rating_{{ history.book.id }}" name="rating">
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                </select>
+                            </div>
+                            <input type="hidden" name="book_id" value="{{ history.book.id }}">
+                            <button type="submit" class="btn btn-primary btn-block">Rate</button>
+                        </form>
+                    </div>
                 </div>
-                {% empty %}
-                <p>No books borrowed yet.</p>
-                {% endfor %}
             </div>
+            {% empty %}
+            <div class="col-12">
+                <p class="text-center">No books borrowed yet.</p>
+            </div>
+            {% endfor %}
         </div>
+    </div>
 
-        <footer>
-            <div class="footer-content">
-                <p>&copy; 2025 Library Management System</p>
-            </div>
-        </footer>
-    </body>
-    </html>
+    <div class="text-center mt-auto py-2" style="background-color: #343a40; color: white;">
+        <p>&copy; 2024 Library System. All rights reserved.</p>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

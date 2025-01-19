@@ -6,17 +6,6 @@ from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.shortcuts import redirect
 
-
-
-
-# class MyAccountAdapter(DefaultAccountAdapter):
-#     def clean_email(self, email):
-#         email_domain = email.split('@')[1]
-#         allowed_domain = 'pilani.bits-pilani.ac.in'
-#         if email_domain != allowed_domain:
-#             raise ValidationError(f"Email domain must be {allowed_domain}")
-#         return email
-
 class MySocialAccountAdapter(DefaultSocialAccountAdapter):
     def pre_social_login(self, request, sociallogin):
         email_domain = sociallogin.account.extra_data['email'].split('@')[1]

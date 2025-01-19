@@ -7,40 +7,63 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Librarian Dashboard</title>
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
-    <nav>
-        <div class="navbar">
-            <a href="{% url 'lib:home' %}" class="brand">Library System</a>
-            <div class="nav-links">
-                <a href="{% url 'lib:librarian_profile' %}" class="profile-icon">Profile</a>
-                <a href="{% url 'lib:borrowed_books' %}">Borrowed Books</a>
-                <a href="{% url 'lib:issue_period' %}">Issue Period</a>
-                <a href="{% url 'lib:view_feedback' %}">View Feedback</a>
-                <a href="{% url 'lib:librarian_view_ratings' %}">View Ratings</a>
-                <a href="{% url 'lib:logout_views' %}">Logout</a>
-            </div>
+<body class="d-flex flex-column min-vh-100">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="{% url 'lib:home' %}" style="font-size: 1.5rem;">Library System</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{% url 'lib:librarian_profile' %}">Profile</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{% url 'lib:borrowed_books' %}">Borrowed Books</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{% url 'lib:issue_period' %}">Issue Period</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{% url 'lib:view_feedback' %}">View Feedback</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{% url 'lib:librarian_view_ratings' %}">View Ratings</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link btn btn-danger text-white" href="{% url 'lib:logout_views' %}">Logout</a>
+                </li>
+            </ul>
         </div>
     </nav>
 
-    <div class="welcome-message">
-        <h2>Welcome to the Librarian Dashboard</h2>
-        <p>Access all the resources and services available to you.</p>
-    </div>
+    <div class="container mt-5">
+        <div class="welcome-message text-center mb-4">
+            <h2>Welcome to the Librarian Dashboard</h2>
+            <p>Manage all the resources and services available to you.</p>
+        </div>
 
-    <!-- Search Form -->
-    <div class="search-form">
-        <form method="GET" action="{% url 'lib:librarian_dashboard' %}">
-            <input type="text" name="q" placeholder="Search for a book by title" value="{{ request.GET.q }}">
-            <button type="submit">Search</button>
-        </form>
-    </div>
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <form method="GET" action="{% url 'lib:librarian_dashboard' %}">
+                    <div class="input-group">
+                        <input class="form-control" type="search" name="q" placeholder="Search for a book by title" value="{{ request.GET.q }}">
+                        <div class="input-group-append">
+                            <button class="btn btn-success" type="submit">Search</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-6 text-right">
+                <a href="{% url 'lib:add_book' %}" class="btn btn-primary">Add Book</a>
+            </div>
+        </div>
 
-    <!-- Book List Section -->
-    <div class="book-list">
-        <h3>Book List</h3>
-        <table>
-            <thead>
+        <table class="table table-striped">
+            <thead class="thead-dark">
                 <tr>
                     <th>Title</th>
                     <th>Author</th>
@@ -49,12 +72,15 @@
                     <th>ISBN Number</th>
                     <th>Available Copies</th>
                     <th>Image</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
-                {% for book in books %}
+                {% for book in page_obj %}
                 <tr>
-                    <td><a href="{% url 'lib:book_detail_lib' book.isbn_number %}">{{ book.title }}</a></td>
+                    <td>
+                        <a href="{% url 'lib:book_detail_lib' book.isbn_number %}">{{ book.title }}</a>
+                    </td>
                     <td>{{ book.author }}</td>
                     <td>{{ book.genre }}</td>
                     <td>{{ book.published_date }}</td>
@@ -62,27 +88,58 @@
                     <td>{{ book.available_copies }}</td>
                     <td>
                         {% if book.image %}
-                            <img src="{{ book.image.url }}" alt="{{ book.title }}" class="book-image">
+                            <img src="{{ book.image.url }}" alt="{{ book.title }}" class="img-thumbnail" style="max-width: 100px;">
                         {% else %}
                             No image available
                         {% endif %}
                     </td>
+                    <td>
+                        <div class="btn-group" role="group">
+                            <a href="{% url 'lib:book_detail_lib' book.isbn_number %}" class="btn btn-sm btn-primary mr-2">Edit</a>
+                            <a href="{% url 'lib:delete_book' book.isbn_number %}" class="btn btn-sm btn-danger">Delete</a>
+                        </div>
+                    </td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="7">No books available.</td>
+                    <td colspan="8" class="text-center">No books available</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
+
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                {% endif %}
+                {% for num in page_obj.paginator.page_range %}
+                <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                </li>
+                {% endfor %}
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
     </div>
 
-    <div class="add-books-btn">
-        <a href="{% url 'lib:add_book' %}" class="btn btn-primary">Add New Book</a>
-    </div>
-
-    <footer>
+    <div class="text-center mt-auto py-2" style="background-color: #343a40; color: white;">
         <p>&copy; 2024 Library System. All rights reserved.</p>
-    </footer>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

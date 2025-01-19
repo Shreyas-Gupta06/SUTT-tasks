@@ -8,41 +8,83 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Profile</title>
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
-    <nav>
-        <div class="navbar">
-            <a href="{% url 'lib:home' %}" class="brand">Library System</a>
-            <div class="nav-links">
-                <a href="{% url 'lib:student_dashboard' %}" class="profile-icon">Dashboard</a>
-                <a href="{% url 'lib:logout_views' %}" class="logout">Logout</a>
-            </div>
+<body class="d-flex flex-column min-vh-100">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="{% url 'lib:home' %}" style="font-size: 1.5rem;">Library System</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{% url 'lib:student_dashboard' %}">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{% url 'lib:student_profile' %}">Profile</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{% url 'lib:student_borrowed_books' %}">Borrowed Books</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{% url 'lib:student_feedback' %}">Feedback</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{% url 'lib:rate_books' %}">Rate Borrowed Books</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link btn btn-danger text-white" href="{% url 'lib:logout_views' %}">Logout</a>
+                </li>
+            </ul>
         </div>
     </nav>
 
-    <div class="welcome-message">
-        <h2>Student Profile</h2>
-        <p>Manage your details below:</p>
-    </div>
-
-    <!-- Display Google Auth User Information -->
-    <div class="user-info">
-        <p><strong>Name:</strong> {{ request.user.first_name }} {{ request.user.last_name }}</p>
-        <p><strong>Email:</strong> {{ request.user.email }}</p>
-    </div>
-
-    <!-- Profile Form -->
-    <div class="profile-form">
-        <form method="POST">
-            {% csrf_token %}
-            {{ form.as_p }}  <!-- Display the form fields as paragraphs -->
-            <button type="submit">Save Changes</button>
-        </form>
-    </div>
-    <footer>
-        <div class="footer-content">
-            <p>&copy; 2024 Library System. All rights reserved.</p>
+    <div class="container mt-5">
+        <div class="welcome-message text-center mb-4">
+            <h2>Student Profile</h2>
+            <p>Manage your details below:</p>
         </div>
-    </footer>
+
+        <!-- Display Google Auth User Information -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">User Information</h5>
+                <p class="card-text"><strong>Name:</strong> {{ user.first_name }} {{ user.last_name }}</p>
+                <p class="card-text"><strong>Email:</strong> {{ user.email }}</p>
+                <p class="card-text"><strong>Room Number:</strong> {{ student_profile.room_number }}</p>
+                <p class="card-text"><strong>Hostel:</strong> {{ student_profile.hostel }}</p>
+            </div>
+        </div>
+
+        <!-- Form to update student profile details -->
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Update Profile</h5>
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="room_number">Room Number</label>
+                        <input type="text" class="form-control" id="room_number" name="room_number" value="{{ student_profile.room_number }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="hostel">Hostel</label>
+                        <input type="text" class="form-control" id="hostel" name="hostel" value="{{ student_profile.hostel }}" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Update Profile</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mt-auto py-2" style="background-color: #343a40; color: white;">
+        <p>&copy; 2024 Library System. All rights reserved.</p>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

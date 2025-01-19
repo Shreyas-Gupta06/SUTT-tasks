@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
         # Attempt to get or create the LibrarianProfile and handle its creation if it doesn't exist
-        if not hasattr(instance, 'librarianprofile') and not hasattr(instance, 'studentprofile'):
+        # if not hasattr(instance, 'librarianprofile') and not hasattr(instance, 'studentprofile'): check 
             librarian_profile, librarian_created = LibrarianProfile.objects.get_or_create(user=instance)
             if librarian_created:
                 # If the librarian profile was created, ensure no student profile exists
