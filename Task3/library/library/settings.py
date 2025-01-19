@@ -152,6 +152,7 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'lib', 'static')]
 
 
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
@@ -191,6 +192,11 @@ LOGIN_URL = '/'
 # ACCOUNT_ADAPTER = 'lib.adapters.MyAccountAdapter'
 SOCIALACCOUNT_ADAPTER = 'lib.adapters.MySocialAccountAdapter'
 
+#
+# 
+# 
+# this line ->
+#  SOCIAL_AUTH_GOOGLE_OAUTH2_REDIRECT_URI = 'https://sg06.pythonanywhere.com/accounts/google/login/callback/'
 
 # ACCOUNT_ADAPTER = 'lib.adapters.CustomAccountAdapter'
 
@@ -209,4 +215,4 @@ MESSAGE_TAGS = {
 }
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = "/home/shreyas/Django/SUTT/Task3/library"
