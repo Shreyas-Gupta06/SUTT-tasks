@@ -206,7 +206,7 @@ def add_book(request):
         form = BookForm(request.POST, request.FILES)  # Include request.FILES for handling file uploads
         if form.is_valid():
             form.save()
-            messages.success(request, 'Book added successfully!')
+            # messages.success(request, 'Book added successfully!')
             return redirect('lib:librarian_dashboard')  # Redirect to librarian_dashboard after successful addition
     else:
         form = BookForm()
